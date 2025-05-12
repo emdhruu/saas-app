@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useSignIn } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
+import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
 
 import {
   Card,
@@ -16,25 +18,33 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 import { Label } from "@/components/ui/label";
 import { Eye, EyeOff } from "lucide-react";
+import {
+  loginSuccess,
+  clearError,
+  setError,
+} from "@/app/store/features/auth/authSlice";
+import { RootState } from "@/app/store/store";
 
 const SignIn = () => {
   const { isLoaded, signIn, setActive } = useSignIn();
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
 
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const error = useAppSelector((state: RootState) => state.auth.error);
 
   if (!isLoaded) return null;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isLoaded) return;
+    dispatch(clearError());
 
     try {
       const result = await signIn.create({
@@ -44,15 +54,22 @@ const SignIn = () => {
 
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
+        if (result.createdSessionId) {
+          dispatch(loginSuccess(result.createdSessionId));
+        }
         router.push("/dashboard");
       } else {
         console.log(JSON.stringify(result, null, 2));
       }
     } catch (error: any) {
-      console.error("Error", error.errors[0].message);
-      setError(error.errors[0].message);
+      // console.error("Error", error.errors[0].message);
+      dispatch(setError(error.errors?.[0]?.message || "Something went wrong"));
     }
   };
+
+  // useEffect(() => {
+  //   dispatch(clearError());
+  // }, [dispatch]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-background">
@@ -71,7 +88,10 @@ const SignIn = () => {
                 type="email"
                 id="email"
                 value={emailAddress}
-                onChange={(e) => setEmailAddress(e.target.value)}
+                onChange={(e) => {
+                  setEmailAddress(e.target.value);
+                  if (error) dispatch(clearError());
+                }}
               />
             </div>
             <div className="space-y-2">
@@ -81,7 +101,10 @@ const SignIn = () => {
                   type={showPassword ? "text" : "password"}
                   id="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (error) dispatch(clearError());
+                  }}
                   required
                 />
                 <button
