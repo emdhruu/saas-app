@@ -128,7 +128,7 @@ const Sidebar = () => {
           <Settings className="w-4 h-4" />
           <span className="text-[90%]">Settings</span>
         </Link>
-        <div className="h-[30%] mr-2 bg-gradient-to-r from-purple-400 via-purple-100 to-white p-6 text-purple-900 rounded-2xl text-center space-y-2 flex flex-col shadow-sm">
+        <div className="h-[80%] mr-2 bg-gradient-to-r from-purple-400 via-purple-100 to-white p-6 text-purple-900 rounded-2xl text-center space-y-2 flex flex-col shadow-sm">
           <div className="flex space-x-1.5 items-center">
             <span>
               <PartyPopper className="w-4 h-4" />
