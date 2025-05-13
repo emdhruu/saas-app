@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import StoreProvider from "./store/StoreProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Task Manager",
-  description: "SaaS Task Manager",
+  title: "Role Based Auth Clerk",
+  description: "role based auth app using prisma and clerk",
 };
 
 export default function RootLayout({
@@ -32,6 +33,7 @@ export default function RootLayout({
         >
           <StoreProvider>
             {children}
+            <Toaster />
           </StoreProvider>
         </body>
       </html>
