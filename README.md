@@ -17,7 +17,7 @@ This is a powerful task management application built with Next.js, featuring rol
 
    ```
    git clone https://github.com/emdhruu/saas-app
-   cd role-based-auth
+   cd saas-app
    ```
 
 2. Install dependencies:
